@@ -17,6 +17,7 @@ import sys
 from datetime import datetime
 import time
 import fnmatch
+import json
 from grass.script import mapcalc
 start = time.time()
 
@@ -24,32 +25,37 @@ start = time.time()
 '''the commented lines are useful only to run directly the script from the GRASS terminal as:
 > python ../S2_preproc.py "../rawdata/" "../roi.shp" 10
 '''
-# from sys import argv
+from sys import argv
 
-# foldin_in = sys.argv[1]
+foldin_in = sys.argv[1]
 
-# if foldin_in[-1]!="/":
-#     foldin =  foldin_in+"/"
-# else:
-#     foldin = foldin_in
+if foldin_in[-1]!="/":
+    foldin =  foldin_in+"/"
+else:
+    foldin = foldin_in
 
-# roi_in = sys.argv[2]
-# res_in = sys.argv[3]
+roi_in = sys.argv[2]
+res_in = sys.argv[3]
 
+#IMPORT JSON FILE FOR PARAMETERS CONFIGURATION
+with open('/home/user/Desktop/UAE/config.json') as json_file:  
+    parameters = json.load(json_file)
 
 # UAE PATH
 #foldin = r'C://Users//sara maffioli//Desktop//UAE//rawdataUAE//' #folder containing the sentinel imagery .SAFE 
 #roi_in = r'C://Users//sara maffioli//Desktop//UAE//study_area//uae_utm39N.shp' # roi Shapefile
 
-# EGYPT PATH
-foldin = r'/home/user/Desktop/UAE/rawdataEGYPT/' #folder containing the sentinel imagery .SAFE 
-roi_in = r'/home/user/Desktop/UAE/study_area/egypt_utm36N.shp' # roi Shapefile
+# # EGYPT PATH
+# foldin = parameters['parameters'][0]['foldin'] #folder containing the sentinel imagery .SAFE 
+# #foldin = r'/home/user/Desktop/UAE/rawdataEGYPT/' #folder containing the sentinel imagery .SAFE 
+# roi_in = parameters['parameters'][0]['roi'] # roi Shapefile
+# #roi_in = r'/home/user/Desktop/UAE/study_area/egypt_utm36N.shp' # roi Shapefile
 
-res_in = 10 # GRASS Region target resolution
+# res_in = parameters['parameters'][0]['resolution'] # GRASS Region target resolution
 
-print (foldin)
-print (roi_in)
-print (res_in)
+# print (foldin)
+# print (roi_in)
+# print (res_in)
 
 # BAND LIST
 band_list=["B02","B03","B04","B05","B06","B07","B08","B8A","B11","B12"]
@@ -151,8 +157,8 @@ for d in ldates:
 
     # CLUSTER
   cluster_name = d.strftime("%Y%m%d")+"_cluster"
-
-  grass.run_command("i.cluster", group='s2' ,subgroup='s2', signaturefile='cluster', classes=7, reportfile="%s"%foldin+"outDOS/"+cluster_name +"_class.txt", overwrite=True)   
+  num_cluster=parameters['parameters'][0]['clusters']
+  grass.run_command("i.cluster", group='s2' ,subgroup='s2', signaturefile='cluster', classes=num_cluster, reportfile="%s"%foldin+"outDOS/"+cluster_name +"_class.txt", overwrite=True)   
   grass.run_command("i.maxlik", group='s2' ,subgroup='s2', signaturefile='cluster', output=cluster_name,overwrite=True)
 
   #clusters.append(cluster_name)

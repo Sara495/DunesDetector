@@ -192,7 +192,8 @@ class DunesDetector:
         data['parameters'].append({  
             'foldin': self.dlg.foldin_input.text(),
             'roi': self.dlg.input_roi.text(),
-            'resolution': self.dlg.input_resolution.text()
+            'resolution': self.dlg.input_resolution.text(),
+            'clusters': self.dlg.input_cluster.text()
             })
 
         with open(cwd + '/pythonScripts/config.json', 'w') as outfile:
@@ -220,7 +221,7 @@ class DunesDetector:
             self.dlg.foldin_input.setText(parameters['parameters'][0]['foldin'])
             self.dlg.input_roi.setText(parameters['parameters'][0]['roi'])
             self.dlg.input_resolution.setText(parameters['parameters'][0]['resolution'])
-                
+            self.dlg.input_cluster.setText(parameters['parameters'][0]['clusters'])   
 
 
         # show the dialog
