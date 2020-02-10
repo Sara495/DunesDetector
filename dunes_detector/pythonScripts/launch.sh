@@ -8,9 +8,9 @@
 export GISBASE=/usr/lib/grass76
 export GRASS_VERSION="76"
 
-foldin=$(jq -r '.parameters | .[].foldin' prova.json)
-roi=$(jq -r '.parameters | .[].roi' prova.json)
-resolution=$(jq -r '.parameters | .[].resolution' prova.json)
+foldin=$(jq -r '.parameters | .[].foldin' /home/user/.local/share/QGIS/QGIS3/profiles/default/python/plugins/dunes_detector/pythonScripts/config.json)
+roi=$(jq -r '.parameters | .[].roi' /home/user/.local/share/QGIS/QGIS3/profiles/default/python/plugins/dunes_detector/pythonScripts/config.json)
+resolution=$(jq -r '.parameters | .[].resolution' /home/user/.local/share/QGIS/QGIS3/profiles/default/python/plugins/dunes_detector/pythonScripts/config.json)
 echo $roi
 echo $foldin
 echo $resolution
@@ -58,9 +58,8 @@ export PYTHONPATH="$GISBASE/etc/python:$PYTHONPATH"
 export MANPATH=$MANPATH:$GISBASE/man
 export GRASS_ADDON_BASE=$HOME/.grass7/addons
 
-#roi=$(jq '.parameters | .[].roi' prova.json)
 
-cd '/home/user/Desktop/UAE/'
+cd '/home/user/.local/share/QGIS/QGIS3/profiles/default/python/plugins/dunes_detector/pythonScripts/'
 
 
 GRASSBIN=$HOME/bin/grass76 python S2_preprocessing.py $foldin $roi $resolution

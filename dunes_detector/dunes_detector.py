@@ -33,6 +33,8 @@ import os.path
 import os
 import sys
 import json
+import subprocess
+from subprocess import Popen, PIPE
 
 class DunesDetector:
     """QGIS Plugin Implementation."""
@@ -185,12 +187,14 @@ class DunesDetector:
     def start_processing(self):
 
         cwd = os.path.dirname(os.path.realpath(__file__))
-
+        fold=self.dlg.foldin_input.text()+"/"
+        print(fold)
         #Write parameters in config.json
         data = {}  
         data['parameters'] = []  
-        data['parameters'].append({  
-            'foldin': self.dlg.foldin_input.text(),
+        data['parameters'].append({ 
+            'foldin': fold, 
+            #'foldin': self.dlg.foldin_input.text(),
             'roi': self.dlg.input_roi.text(),
             'resolution': self.dlg.input_resolution.text(),
             'clusters': self.dlg.input_cluster.text()
@@ -200,8 +204,13 @@ class DunesDetector:
             json.dump(data, outfile)
 
         cwd = os.path.dirname(os.path.realpath(__file__))
+        path=cwd + "/pythonScripts/launch.sh"
 
-        #os.system("sh '" + cwd + "/pythonScripts/launch.sh'")
+
+        session = subprocess.Popen([path], stdout=PIPE, stderr=PIPE)
+        stdout, stderr = session.communicate()
+        if stderr:
+            raise Exception("Error "+str(stderr))
 
     #def on_finished(self):
     def run(self):

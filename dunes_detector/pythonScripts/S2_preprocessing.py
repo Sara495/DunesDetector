@@ -38,7 +38,7 @@ roi_in = sys.argv[2]
 res_in = sys.argv[3]
 
 #IMPORT JSON FILE FOR PARAMETERS CONFIGURATION
-with open('/home/user/Desktop/UAE/config.json') as json_file:  
+with open('config.json') as json_file:  
     parameters = json.load(json_file)
 
 # UAE PATH
