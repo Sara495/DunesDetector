@@ -41,16 +41,11 @@ res_in = sys.argv[3]
 with open('config.json') as json_file:  
     parameters = json.load(json_file)
 
-# UAE PATH
-#foldin = r'C://Users//sara maffioli//Desktop//UAE//rawdataUAE//' #folder containing the sentinel imagery .SAFE 
-#roi_in = r'C://Users//sara maffioli//Desktop//UAE//study_area//uae_utm39N.shp' # roi Shapefile
-
-# # EGYPT PATH
+# otherwise launching from terminal with ipython copying and past the script uncomment those lines
+# using the parameters from the config file
+# EGYPT PATH
 # foldin = parameters['parameters'][0]['foldin'] #folder containing the sentinel imagery .SAFE 
-# #foldin = r'/home/user/Desktop/UAE/rawdataEGYPT/' #folder containing the sentinel imagery .SAFE 
 # roi_in = parameters['parameters'][0]['roi'] # roi Shapefile
-# #roi_in = r'/home/user/Desktop/UAE/study_area/egypt_utm36N.shp' # roi Shapefile
-
 # res_in = parameters['parameters'][0]['resolution'] # GRASS Region target resolution
 
 # print (foldin)
@@ -66,7 +61,6 @@ if not os.path.exists(folder_out):
     os.makedirs(folder_out)
 
 #SET LOCATION 
-#grass.create_location(dbase='foldin', location='Lnew', overwrite=True) #filename='roi_in'
 #SET REGION ACCORDING TO SHAPE AND RES
 grass.run_command("v.in.ogr",input=roi_in,output="roi",overwrite=True)
 grass.run_command("g.region",vect="roi",res=res_in,flags="a")
@@ -154,6 +148,9 @@ for d in ldates:
   name = d.strftime("%Y%m%d")+"_dos"
   myInput=[name + "_"+n for n in band_list]
   grass.run_command("i.group",group='s2',subgroup='s2',input=",".join(myInput))
+    # EXPORT TIFF WITH COMPRESSION 
+  grass.run_command("r.out.gdal",input='s2',output=foldin+"outDOS/"+name+'.tiff', createopt="COMPRESS=DEFLATE,NUM_THREADS=ALL_CPUS,PREDICTOR=3,BIGTIFF=YES",flags='tc',overwrite=True)
+
 
     # CLUSTER
   cluster_name = d.strftime("%Y%m%d")+"_cluster"
@@ -161,33 +158,26 @@ for d in ldates:
   grass.run_command("i.cluster", group='s2' ,subgroup='s2', signaturefile='cluster', classes=num_cluster, reportfile="%s"%foldin+"outDOS/"+cluster_name +"_class.txt", overwrite=True)   
   grass.run_command("i.maxlik", group='s2' ,subgroup='s2', signaturefile='cluster', output=cluster_name,overwrite=True)
 
-  #clusters.append(cluster_name)
+  
     # EXPORT CLUSTER MAP
   grass.run_command("r.out.gdal",input=cluster_name,output=foldin+"outDOS/"+cluster_name+'.tiff',overwrite=True)
     # RECLASSIFY
-  grass.run_command("r.reclass",input=cluster_name ,output=cluster_name+"_rec", rules=foldin+'dune.txt' , title="Reclassification", overwrite=True)
+  grass.run_command("r.reclass",input=cluster_name ,output=cluster_name+"_rec", rules='/home/user/.local/share/QGIS/QGIS3/profiles/default/python/plugins/dunes_detector/pythonScripts/dune.txt' , title="Reclassification", overwrite=True)
   mapcalc("$reclass_map=$reclass_map",reclass_map=cluster_name+"_rec",overwrite=True)
+   # EXPORT RE_CLUSTER MAP
   grass.run_command("r.out.gdal",input=cluster_name+"_rec",output=foldin+"outDOS/"+cluster_name+'_rec'+'.tiff',overwrite=True)
   clusters.append(cluster_name+'_rec')
      
-    # REMOVE ALL DATA FROM THE GRASS MAPSET TO START PROCESSING ANOTHER SCENE
-    #grass.run_command("g.remove",type='raster,vector',pattern="%s"%d.strftime("%Y%m%d"),flags='fr')
-    #grass.run_command("g.remove",type='group',name='s2',flags='f')
+   
 
   name_list=[]
-  # band_name_list=[]
 
 # DIFFERENCE MAP  
 mapcalc("$difference=$first-$second", difference='difference',first=clusters[0],second=clusters[1],overwrite=True)
 # EXPORT CLUSTER MAP
 grass.run_command("r.out.gdal",input='difference',output=foldin+"outDOS/"+'difference'+'.tiff',flags='c',overwrite=True)
-#end = time.time()
-#print (end-start)
-	
-    # EXPORT TIFF WITH COMPRESSION 
-    #grass.run_command("r.out.gdal",input='s2',output=foldin+"outDOS/"+name+'.tiff', createopt="COMPRESS=DEFLATE,NUM_THREADS=ALL_CPUS,PREDICTOR=3,BIGTIFF=YES",flags='tc',overwrite=True)
 
-
+# REMOVE FROM GRASS LOCATION
 for d in ldates:
   grass.run_command("g.remove",type='raster,vector',pattern="%s"%d.strftime("%Y%m%d"),flags='fr')
   grass.run_command("g.remove",type='group',name='s2',flags='f')

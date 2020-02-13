@@ -18,8 +18,6 @@ echo $resolution
 MYGISDBASE=$HOME/grassdata
 grass76 -c -e  $roi  $HOME/grassdata/mylocation
 grass76 -c -e -text $HOME/grassdata/mylocation/mymapset
-#grass76 -c -e -text /media/sf_sharedosgeo/UAE/study_area/egypt_utm36N.shp  $HOME/grassdata/mylocation
-#grass76 -c -e -text $HOME/grassdata/mylocation/mymapset
 MYLOC=mylocation
 MYMAPSET=mymapset
 
@@ -63,4 +61,3 @@ cd '/home/user/.local/share/QGIS/QGIS3/profiles/default/python/plugins/dunes_det
 
 
 GRASSBIN=$HOME/bin/grass76 python S2_preprocessing.py $foldin $roi $resolution
-#GRASSBIN=$HOME/bin/grass76 python S2_preprocessing.py "/home/user/Desktop/UAE/rawdataEGYPT/" "/home/user/Desktop/UAE/study_area/egypt_utm36N.shp" 10
