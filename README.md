@@ -1,2 +1,2 @@
 # DunesDetector
-it's a QGis plug-in
+it's a QGIS plug-in
