@@ -19,6 +19,7 @@ import time
 import fnmatch
 import json
 from grass.script import mapcalc
+import webbrowser
 start = time.time()
 
 #INPUT DATA
@@ -59,6 +60,7 @@ band_list=["B02","B03","B04","B05","B06","B07","B08","B8A","B11","B12"]
 folder_out = foldin + "outDOS"
 if not os.path.exists(folder_out):        
     os.makedirs(folder_out)
+
 
 #SET LOCATION 
 #SET REGION ACCORDING TO SHAPE AND RES
@@ -194,5 +196,5 @@ for d in ldates:
 
 end = time.time()
 print (end-start) 
-
+webbrowser.open(folder_out)
 

@@ -186,6 +186,7 @@ class DunesDetector:
     #def on_start(self):
     def start_processing(self):
 
+
         cwd = os.path.dirname(os.path.realpath(__file__))
         fold=self.dlg.foldin_input.text()+"/"
         print(fold)
@@ -194,7 +195,6 @@ class DunesDetector:
         data['parameters'] = []  
         data['parameters'].append({ 
             'foldin': fold, 
-            #'foldin': self.dlg.foldin_input.text(),
             'roi': self.dlg.input_roi.text(),
             'resolution': self.dlg.input_resolution.text(),
             'clusters': self.dlg.input_cluster.text()
@@ -202,6 +202,7 @@ class DunesDetector:
 
         with open(cwd + '/pythonScripts/config.json', 'w') as outfile:
             json.dump(data, outfile)
+        
 
         cwd = os.path.dirname(os.path.realpath(__file__))
         path=cwd + "/pythonScripts/launch.sh"
@@ -211,6 +212,7 @@ class DunesDetector:
         stdout, stderr = session.communicate()
         if stderr:
             raise Exception("Error "+str(stderr))
+        
 
     #def on_finished(self):
     def run(self):
@@ -221,7 +223,7 @@ class DunesDetector:
         #if self.first_start == True:
          #   self.first_start = False
           #  self.dlg = DunesDetectorDialog()
-
+        
         cwd = os.path.dirname(os.path.realpath(__file__))
         if os.path.isfile(cwd + '/pythonScripts/config.json'):
             with open(cwd + '/pythonScripts/config.json') as json_file:  
