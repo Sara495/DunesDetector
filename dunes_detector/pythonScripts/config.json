@@ -1,1 +1,1 @@
-{"parameters": [{"foldin": "/home/user/Desktop/UAE/rawdataEGYPT/", "roi": "/home/user/Desktop/UAE/study_area/egypt_utm36N.shp", "resolution": "10", "clusters": "7"}]}
+{"parameters": [{"foldin": "Select a folder", "roi": "Select shp", "resolution": "10", "clusters": "7"}]}
