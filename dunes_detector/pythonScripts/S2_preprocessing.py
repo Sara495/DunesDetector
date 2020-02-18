@@ -74,13 +74,14 @@ for item in data:
     if item.endswith('.SAFE'): 
         date = (item.split("_")[-1]).split(".SAFE")[0]
         dates.append(datetime.strptime(date.partition('T')[0], '%Y%m%d').date())        
-ldates = list(set(dates))
+ldates = list(sorted(dates))
 print (ldates)
 
 # PROCESSING SCENES BY DATE
 name_list=[]
 band_name_list=[]
 clusters=[]
+cluster_name=[]
 images=[]
 date_aq=[]
 path_gr=[]
@@ -173,11 +174,17 @@ for d in ldates:
    
 
   name_list=[]
-
-# DIFFERENCE MAP  
-mapcalc("$difference=$first-$second", difference='difference',first=clusters[0],second=clusters[1],overwrite=True)
-# EXPORT CLUSTER MAP
-grass.run_command("r.out.gdal",input='difference',output=foldin+"outDOS/"+'difference'+'.tiff',flags='c',overwrite=True)
+for i in range(0, len(ldates)):
+  if i <= max(range(0,len(ldates)))-1:
+    m_t0 =ldates[i].strftime("%Y%m%d")+'_cluster_rec'
+    print(m_t0)
+    m_t1 =ldates[i+1].strftime("%Y%m%d")+'_cluster_rec'
+    print(m_t1)
+    # DIFFERENCE MAP  
+    mapcalc("$difference=$first-$second", difference=m_t0+"_"+m_t1+'_difference',first=m_t0,second=m_t1,overwrite=True)
+    # EXPORT CLUSTER MAP
+    grass.run_command("r.out.gdal",input=m_t0+"_"+m_t1+'_difference',output=foldin+"outDOS/""%s"%ldates[i].strftime("%Y%m%d")+"_"+ldates[i+1].strftime("%Y%m%d")+'_difference'+'.tiff',flags='c',overwrite=True)
+    grass.run_command("g.remove",type='raster',pattern=m_t0+"_"+m_t1+'_difference',flags='f')
 
 # REMOVE FROM GRASS LOCATION
 for d in ldates:
@@ -185,6 +192,7 @@ for d in ldates:
   grass.run_command("g.remove",type='group',name='s2',flags='f')
   grass.run_command("g.remove",type='raster',name='difference',flags='f')
   grass.run_command("g.remove",type='raster',pattern="%s"%d.strftime("%Y%m%d")+'_cluster_rec',flags='fr')
+  grass.run_command("g.remove",type='raster',pattern="%s"%d.strftime("%Y%m%d")+'_cluster',flags='fr')
   clusters=[]
   name_list=[]
   band_name_list=[]
