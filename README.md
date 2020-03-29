@@ -20,7 +20,7 @@ Example of shell instruction:
 ```
 (user) C:\Users\Desktop\Folder_in>sentinelsat -u username -p password -g file.geojson --sentinel 2 -s YYYYMMDD -e YYYYMMDD -d
 ```
-The images folder must be unzipped with extension .SAFE
+The image folders must be unzipped with extension .SAFE
 
 Also a JQ dependency is needed: 
 ```
