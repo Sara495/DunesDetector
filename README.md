@@ -20,6 +20,8 @@ Example of shell instruction:
 ```
 (user) C:\Users\Desktop\Folder_in>sentinelsat -u username -p password -g file.geojson --sentinel 2 -s YYYYMMDD -e YYYYMMDD -d
 ```
+The images folder must be unzipped with extension .SAFE
+
 Also a JQ dependency is needed: 
 ```
 sudo apt-get install jq
@@ -28,12 +30,12 @@ sudo apt-get install jq
 
 Launch OSGeoLive Virtual Machine
 
-Select a folder and download the code, then compress 'dunes_detector' folder as .ZIP
+Select a folder and download the code
 
 ```
 git clone https://github.com/Sara495/DunesDetector
 ```
-From QGIS Desktop install plugin, choosing the option install from ZIP, and select the ZIP file created
+From QGIS Desktop install plugin, choosing the option install from ZIP, and select the ZIP file 
 
 
 ### Running
